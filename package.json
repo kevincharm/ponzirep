@@ -6,7 +6,8 @@
     "storage:check": "yarn hardhat storage-layout --check",
     "storage:update": "yarn hardhat storage-layout --update",
     "test": "yarn hardhat --network hardhat test",
-    "coverage": "yarn hardhat coverage"
+    "coverage": "yarn hardhat coverage",
+    "deploy:xdai": "yarn hardhat --network xdai run scripts/deploy.ts"
   },
   "keywords": [],
   "author": "kevincharm <k@fairy.dev>",

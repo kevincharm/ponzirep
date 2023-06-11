@@ -44,6 +44,11 @@ const config: HardhatUserConfig = {
             chainId: 137,
             accounts: [process.env.MAINNET_PK as string],
         },
+        xdai: {
+            url: process.env.XDAI_URL as string,
+            chainId: 0x64,
+            accounts: [process.env.MAINNET_PK as string],
+        },
     },
     gasReporter: {
         enabled: true,

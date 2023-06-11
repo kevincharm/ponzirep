@@ -4,6 +4,13 @@ import { PonziRepGovernor__factory, PonziRep__factory } from '../typechain-types
 const VOTING_DELAY = 5 // BLOCKS
 const VOTING_PERIOD = 12 // BLOCKS
 const QUORUM_NUMERATOR = 10 // 10%
+const FUNDING_FATHERS = [
+    '0xFd37f4625CA5816157D55a5b3F7Dd8DD5F8a0C2F',
+    '0x77fb4fa1ABA92576942aD34BC47834059b84e693',
+    '0x84e1056eD1B76fB03b43e924EF98833dBA394b2B',
+    '0x55F5429343891f0a2b2A8da63a48E82DA8D9f2F6',
+    '0x4fFACe9865bDCBc0b36ec881Fa27803046A88736',
+]
 
 export async function deploy() {
     const [deployer, bobTheBuilder, bobRoss, bobMarley, bobsYourUncle, sideshowBob] =
@@ -13,13 +20,7 @@ export async function deploy() {
     const ponzirepArgs: Parameters<PonziRep__factory['deploy']> = [
         'PonziRep',
         'PP',
-        [
-            bobTheBuilder.address,
-            bobRoss.address,
-            bobMarley.address,
-            bobsYourUncle.address,
-            sideshowBob.address,
-        ],
+        FUNDING_FATHERS,
     ]
     const ponzirep = await new PonziRep__factory(deployer).deploy(...ponzirepArgs)
     console.log(`Deployed PonziRep to: ${ponzirep.address}`)
