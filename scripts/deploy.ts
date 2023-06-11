@@ -1,5 +1,6 @@
 import { ethers, run } from 'hardhat'
 import { PonziRepGovernor__factory, PonziRep__factory } from '../typechain-types'
+import { parseUnits } from 'ethers/lib/utils'
 
 const VOTING_DELAY = 5 // BLOCKS
 const VOTING_PERIOD = 12 // BLOCKS
@@ -23,6 +24,9 @@ export async function deploy() {
         FUNDING_FATHERS,
     ]
     const ponzirep = await new PonziRep__factory(deployer).deploy(...ponzirepArgs)
+    // const ponzirep = await new PonziRep__factory(deployer).attach(
+    //     '0x9309bd93a8b662d315Ce0D43bb95984694F120Cb'
+    // )
     console.log(`Deployed PonziRep to: ${ponzirep.address}`)
 
     // Deploy governor
@@ -34,6 +38,9 @@ export async function deploy() {
         QUORUM_NUMERATOR,
     ]
     const governor = await new PonziRepGovernor__factory(deployer).deploy(...governorArgs)
+    // const governor = await new PonziRepGovernor__factory(deployer).attach(
+    //     '0xb3a2EAB23AdC21eA78e1851Dd4b1316cb2275D9E'
+    // )
     console.log(`Deployed PonziRepGovernor to: ${governor.address}`)
 
     // Set gov (permanent)

@@ -79,7 +79,36 @@ const config: HardhatUserConfig = {
         apiKey: {
             gnosis: process.env.GNOSISSCAN_API_KEY as string,
             optimisticEthereum: process.env.OPTIMISTIC_ETHERSCAN_API_KEY as string,
+            scrollAlpha: 'abcdef',
+            mantleTestnet: 'abcdef',
+            taikoTestnet: 'abcdef',
         },
+        customChains: [
+            {
+                network: 'scrollAlpha',
+                chainId: 534353,
+                urls: {
+                    apiURL: 'https://blockscout.scroll.io/api',
+                    browserURL: 'https://blockscout.scroll.io',
+                },
+            },
+            {
+                network: 'mantleTestnet',
+                chainId: 5001,
+                urls: {
+                    apiURL: 'https://explorer.testnet.mantle.xyz/api',
+                    browserURL: 'https://explorer.testnet.mantle.xyz',
+                },
+            },
+            {
+                network: 'taikoTestnet',
+                chainId: 167005,
+                urls: {
+                    apiURL: 'https://explorer.test.taiko.xyz/api',
+                    browserURL: 'https://explorer.test.taiko.xyz',
+                },
+            },
+        ],
     },
     paths: {
         storageLayouts: '.storage-layouts',
