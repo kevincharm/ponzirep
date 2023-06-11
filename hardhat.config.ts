@@ -49,6 +49,21 @@ const config: HardhatUserConfig = {
             chainId: 0x64,
             accounts: [process.env.MAINNET_PK as string],
         },
+        optimism: {
+            url: process.env.OPTIMISM_URL as string,
+            chainId: 10,
+            accounts: [process.env.MAINNET_PK as string],
+        },
+        scrollAlpha: {
+            url: 'https://alpha-rpc.scroll.io/l2',
+            chainId: 534353,
+            accounts: [process.env.MAINNET_PK as string],
+        },
+        mantleTestnet: {
+            url: 'https://rpc.testnet.mantle.xyz',
+            chainId: 5001,
+            accounts: [process.env.MAINNET_PK as string],
+        },
     },
     gasReporter: {
         enabled: true,
@@ -58,6 +73,7 @@ const config: HardhatUserConfig = {
     etherscan: {
         apiKey: {
             gnosis: process.env.GNOSISSCAN_API_KEY as string,
+            optimisticEthereum: process.env.OPTIMISTIC_ETHERSCAN_API_KEY as string,
         },
     },
     paths: {
