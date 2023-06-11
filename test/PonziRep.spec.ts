@@ -100,5 +100,6 @@ describe('PonziRep', () => {
             )
         )
         await ponzirep.finaliseTrade(bob1.address, nonce, bob1Sig, bob2Sig)
+        expect((await ponzirep.tradeOffers(tradeOfferId)).status).to.eq(2) // Finalised
     })
 })
