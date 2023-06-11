@@ -64,6 +64,11 @@ const config: HardhatUserConfig = {
             chainId: 5001,
             accounts: [process.env.MAINNET_PK as string],
         },
+        taikoTestnet: {
+            url: 'https://rpc.test.taiko.xyz',
+            chainId: 167005,
+            accounts: [process.env.MAINNET_PK as string],
+        },
     },
     gasReporter: {
         enabled: true,

@@ -10,7 +10,8 @@
     "deploy:xdai": "yarn hardhat --network xdai run scripts/deploy.ts",
     "deploy:optimism": "yarn hardhat --network optimism run scripts/deploy.ts",
     "deploy:mantle-testnet": "yarn hardhat --network mantleTestnet run scripts/deploy.ts",
-    "deploy:scroll-alpha": "yarn hardhat --network scrollAlpha run scripts/deploy.ts"
+    "deploy:scroll-alpha": "yarn hardhat --network scrollAlpha run scripts/deploy.ts",
+    "deploy:taiko-testnet": "yarn hardhat --network taikoTestnet run scripts/deploy.ts"
   },
   "keywords": [],
   "author": "kevincharm <k@fairy.dev>",
