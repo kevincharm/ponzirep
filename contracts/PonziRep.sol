@@ -141,17 +141,19 @@ contract PonziRep is ERC20Votes {
         bytes calldata sigCryptoSide,
         bytes calldata sigFiatSide
     ) external {
-        uint256 msgLen = 20 + Math.log10(offerCreatorNonce) + 1;
-        bytes32 msgHash = keccak256(
-            abi.encodePacked(
-                "\x19Ethereum Signed Message:\n",
-                msgLen.toString(),
-                offerCreator.toHexString(),
-                offerCreatorNonce.toHexString()
+        bytes32 digest = _hashTypedDataV4(
+            keccak256(
+                abi.encode(
+                    keccak256(
+                        "FinaliseTrade(address offerCreator,uint256 offerCreatorNonce)"
+                    ),
+                    offerCreator,
+                    offerCreatorNonce
+                )
             )
         );
-        address cryptoSide = recoverSigner(msgHash, sigCryptoSide);
-        address fiatSide = recoverSigner(msgHash, sigFiatSide);
+        address cryptoSide = recoverSigner(digest, sigCryptoSide);
+        address fiatSide = recoverSigner(digest, sigFiatSide);
         require(
             balanceOf(cryptoSide) >= 1 && balanceOf(fiatSide) >= 1,
             "One side of trade is a social outcast"
