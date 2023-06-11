@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.18;
 
+import {Math} from "@openzeppelin/contracts/utils/math/Math.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 import {ECDSA} from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import {ERC20, ERC20Permit, ERC20Votes} from "@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol";
@@ -8,6 +9,7 @@ import {Sets} from "./Sets.sol";
 
 contract PonziRep is ERC20Votes {
     using Strings for address;
+    using Strings for uint256;
     using Sets for Sets.Set;
 
     enum TradeOfferStatus {
@@ -24,7 +26,7 @@ contract PonziRep is ERC20Votes {
     }
 
     mapping(address => uint256) public userTradeNonce;
-    mapping(address => mapping(uint256 => TradeOffer)) public tradeOffers;
+    mapping(bytes32 => TradeOffer) public tradeOffers;
     Sets.Set private tradeOffersSet;
     address public governor;
     mapping(address => bool) public shunned;
@@ -96,7 +98,8 @@ contract PonziRep is ERC20Votes {
         require(msg.value >= uReceive, "Not enough ETH deposited");
         _assertNotShunned(msg.sender);
         uint256 nonce = userTradeNonce[msg.sender]++;
-        tradeOffers[msg.sender][nonce] = (
+        bytes32 tradeOfferId = keccak256(abi.encode(msg.sender, nonce));
+        tradeOffers[tradeOfferId] = (
             TradeOffer({
                 uReceive: uReceive,
                 iReceive: iReceive,
@@ -108,7 +111,9 @@ contract PonziRep is ERC20Votes {
     }
 
     function withdrawTradeOffer(uint256 nonce) external {
-        TradeOffer storage tradeOffer = tradeOffers[msg.sender][nonce];
+        TradeOffer storage tradeOffer = tradeOffers[
+            keccak256(abi.encode(msg.sender, nonce))
+        ];
         require(
             tradeOffer.status == TradeOfferStatus.Initialised,
             "Offer not initialised"
@@ -136,16 +141,26 @@ contract PonziRep is ERC20Votes {
         bytes calldata sigCryptoSide,
         bytes calldata sigFiatSide
     ) external {
+        uint256 msgLen = 20 + Math.log10(offerCreatorNonce) + 1;
         bytes32 msgHash = keccak256(
-            abi.encode(offerCreator, offerCreatorNonce)
+            abi.encodePacked(
+                "\x19Ethereum Signed Message:\n",
+                msgLen.toString(),
+                offerCreator.toHexString(),
+                offerCreatorNonce.toHexString()
+            )
         );
         address cryptoSide = recoverSigner(msgHash, sigCryptoSide);
         address fiatSide = recoverSigner(msgHash, sigFiatSide);
+        require(
+            balanceOf(cryptoSide) >= 1 && balanceOf(fiatSide) >= 1,
+            "One side of trade is a social outcast"
+        );
         _assertNotShunned(cryptoSide);
         _assertNotShunned(fiatSide);
 
-        TradeOffer storage tradeOffer = tradeOffers[cryptoSide][
-            offerCreatorNonce
+        TradeOffer storage tradeOffer = tradeOffers[
+            keccak256(abi.encode(cryptoSide, offerCreatorNonce))
         ];
         require(
             tradeOffer.status == TradeOfferStatus.Initialised,
@@ -205,16 +220,16 @@ contract PonziRep is ERC20Votes {
     }
 
     /// @notice Returns all trades regardless of their status (#yolonoindexer)
-    function getTrades() external view returns (bytes32[] memory out) {
+    function getTrades() external view returns (TradeOffer[] memory out) {
         uint256 size = tradeOffersSet.size;
         if (size == 0) {
-            return new bytes32[](0);
+            return new TradeOffer[](0);
         }
 
-        out = new bytes32[](size);
+        out = new TradeOffer[](size);
         bytes32 element = tradeOffersSet.tail();
         for (uint256 i; i < size; ++i) {
-            out[size - i - 1] = element;
+            out[size - i - 1] = tradeOffers[element];
             element = tradeOffersSet.prev(element);
         }
         return out;

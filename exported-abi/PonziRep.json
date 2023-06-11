@@ -531,9 +531,26 @@
     "name": "getTrades",
     "outputs": [
       {
-        "internalType": "bytes32[]",
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "uReceive",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "iReceive",
+            "type": "uint256"
+          },
+          {
+            "internalType": "enum PonziRep.TradeOfferStatus",
+            "name": "status",
+            "type": "uint8"
+          }
+        ],
+        "internalType": "struct PonziRep.TradeOffer[]",
         "name": "out",
-        "type": "bytes32[]"
+        "type": "tuple[]"
       }
     ],
     "stateMutability": "view",
@@ -808,14 +825,9 @@
   {
     "inputs": [
       {
-        "internalType": "address",
+        "internalType": "bytes32",
         "name": "",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
+        "type": "bytes32"
       }
     ],
     "name": "tradeOffers",
