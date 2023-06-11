@@ -57,7 +57,7 @@ const config: HardhatUserConfig = {
     },
     etherscan: {
         apiKey: {
-            polygon: process.env.POLYGONSCAN_API_KEY!,
+            gnosis: process.env.GNOSISSCAN_API_KEY as string,
         },
     },
     paths: {

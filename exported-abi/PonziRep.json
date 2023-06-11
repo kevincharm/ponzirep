@@ -533,22 +533,17 @@
       {
         "components": [
           {
-            "internalType": "uint256",
-            "name": "uReceive",
-            "type": "uint256"
+            "internalType": "address",
+            "name": "offerer",
+            "type": "address"
           },
           {
             "internalType": "uint256",
-            "name": "iReceive",
+            "name": "nonce",
             "type": "uint256"
-          },
-          {
-            "internalType": "enum PonziRep.TradeOfferStatus",
-            "name": "status",
-            "type": "uint8"
           }
         ],
-        "internalType": "struct PonziRep.TradeOffer[]",
+        "internalType": "struct PonziRep.TradeOfferId[]",
         "name": "out",
         "type": "tuple[]"
       }
@@ -816,6 +811,30 @@
       {
         "internalType": "uint256",
         "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "name": "tradeOfferIds",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "offerer",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "nonce",
         "type": "uint256"
       }
     ],

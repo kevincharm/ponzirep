@@ -48,6 +48,7 @@ describe('PonziRep', () => {
             value: parseEther('1.0'), // must agree with `uReceive`
         })
         expect(await ponzirep.getTradesCount()).to.eq(1)
+        console.log(await ponzirep.getTrades())
         const tradeOfferId = ethers.utils.keccak256(
             ethers.utils.defaultAbiCoder.encode(['address', 'uint256'], [bob1.address, nonce])
         )

@@ -1,4 +1,4 @@
-import { ethers } from 'hardhat'
+import { ethers, run } from 'hardhat'
 import { PonziRepGovernor__factory, PonziRep__factory } from '../typechain-types'
 
 const VOTING_DELAY = 5 // BLOCKS
@@ -39,6 +39,18 @@ export async function deploy() {
     // Set gov (permanent)
     await ponzirep.setGovernance(governor.address)
     console.log(`Set ponzirep governor to: ${governor.address}`)
+
+    await new Promise((resolve) => setTimeout(resolve, 60_000)) // wait 1 min for Gnosisscan to update
+    await run('verify:verify', {
+        address: ponzirep.address,
+        constructorArguments: ponzirepArgs,
+    })
+    await run('verify:verify', {
+        address: governor.address,
+        constructorArguments: governorArgs,
+    })
+
+    console.log('Verified on Gnosisscan.')
 }
 
 deploy()

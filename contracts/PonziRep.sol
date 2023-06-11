@@ -25,8 +25,14 @@ contract PonziRep is ERC20Votes {
         TradeOfferStatus status;
     }
 
+    struct TradeOfferId {
+        address offerer;
+        uint256 nonce;
+    }
+
     mapping(address => uint256) public userTradeNonce;
     mapping(bytes32 => TradeOffer) public tradeOffers;
+    mapping(bytes32 => TradeOfferId) public tradeOfferIds;
     Sets.Set private tradeOffersSet;
     address public governor;
     mapping(address => bool) public shunned;
@@ -99,6 +105,10 @@ contract PonziRep is ERC20Votes {
         _assertNotShunned(msg.sender);
         uint256 nonce = userTradeNonce[msg.sender]++;
         bytes32 tradeOfferId = keccak256(abi.encode(msg.sender, nonce));
+        tradeOfferIds[tradeOfferId] = TradeOfferId({
+            offerer: msg.sender,
+            nonce: nonce
+        });
         tradeOffers[tradeOfferId] = (
             TradeOffer({
                 uReceive: uReceive,
@@ -222,16 +232,16 @@ contract PonziRep is ERC20Votes {
     }
 
     /// @notice Returns all trades regardless of their status (#yolonoindexer)
-    function getTrades() external view returns (TradeOffer[] memory out) {
+    function getTrades() external view returns (TradeOfferId[] memory out) {
         uint256 size = tradeOffersSet.size;
         if (size == 0) {
-            return new TradeOffer[](0);
+            return new TradeOfferId[](0);
         }
 
-        out = new TradeOffer[](size);
+        out = new TradeOfferId[](size);
         bytes32 element = tradeOffersSet.tail();
         for (uint256 i; i < size; ++i) {
-            out[size - i - 1] = tradeOffers[element];
+            out[size - i - 1] = tradeOfferIds[element];
             element = tradeOffersSet.prev(element);
         }
         return out;
