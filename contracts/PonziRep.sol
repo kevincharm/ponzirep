@@ -86,6 +86,8 @@ contract PonziRep is ERC20Votes {
     }
 
     function invite(address noob) external {
+        require(msg.sender != noob, "Can't invite self");
+        require(balanceOf(noob) == 0, "Invitee already a member");
         // Only members with a certain threshold (let's say 10PP) can invite
         // new members to the community. Then they become the referral that
         // receives 50% of any social capital awarded from trades of the
