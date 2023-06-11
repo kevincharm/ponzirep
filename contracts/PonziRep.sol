@@ -189,11 +189,15 @@ contract PonziRep is ERC20Votes {
 
     /// @notice Social capital can't be transferred
     function _beforeTokenTransfer(
-        address,
-        address,
+        address from,
+        address to,
         uint256
     ) internal virtual override {
-        revert("lol no");
+        bool isMint = from == address(0);
+        bool isBurn = to == address(0);
+        if (!isMint && !isBurn) {
+            revert("lol no");
+        }
     }
 
     function getTradesCount() external view returns (uint256) {
